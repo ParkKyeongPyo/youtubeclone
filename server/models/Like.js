@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 const Schema = require('mongoose');
 
-const dislikeSchema = mongoose.Schema({
+const likeSchema = mongoose.Schema({
     userId: {
         type: Schema.Types.ObjectId, //Id만 알아도 유저 모델에 있는 데이터들을 모두 가져올 수 있다.
         ref: 'User'
@@ -19,6 +19,6 @@ const dislikeSchema = mongoose.Schema({
 
 
 
-const Dislike = mongoose.model('Dislike', dislikeSchema);
+const Like = mongoose.model('Like', likeSchema);
 
-module.exports = { Dislike }
+module.exports = { Like }

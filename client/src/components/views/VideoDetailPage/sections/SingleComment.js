@@ -13,10 +13,11 @@ function SingleComment(props) {
 
     const onClickReplyOpen = () => {
         setopenReply(!openReply);
+        props.replyStateFunction(!openReply)
     }
 
     const actions = [ //[]는 무슨 문법이지?
-        <span onClick={onClickReplyOpen} key="comment-basic-reply-to">Reply to</span>
+        <span onClick={onClickReplyOpen} key="comment-basic-reply-to">답글</span>
     ]
 
     const onHanleChange = (event) => {
@@ -38,7 +39,7 @@ function SingleComment(props) {
                 if(response.data.success){
                     console.log(response.data);
                     setcommentValue('');
-                    props.commentSender(response.data.doc);
+                    props.commentSender(response.data.info);
                 } else {
                     alert('comment state를 DB에 보내는데 실패했습니다')
                 }
@@ -57,7 +58,7 @@ function SingleComment(props) {
                 content={props.commentLists.content}
             />
         {openReply &&
-            <form style={{ display: 'flex' }} onSubmit={onSubmit}>
+            <form style={{ display: 'flex', paddingLeft: '44px' }} onSubmit={onSubmit}>
                 <textarea
                     style={{ width: '80%', borderRadius: '5px' }}
                     onChange={onHanleChange}

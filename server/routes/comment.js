@@ -21,7 +21,7 @@ router.post('/sendcomment', (req, res) => {
     comment.save((err, info) => {
         if (err) return res.json({success: false, err})
         else {
-            Comment.find({'writer': info.writer})
+            Comment.findOne({'writer': info.writer, 'postId': info.postId, 'content': info.content})
                 .populate('writer')
                 .exec((err,doc) => {
                     if (err) return res.json({success: false, err})
@@ -39,7 +39,14 @@ router.post('/sendsinglecomment', (req, res) => {
 
     comment.save((err, doc) => {
         if (err) return res.json({sucess: false, err})
-        return res.json({success: true, doc, message: 'singlecomment를 comment모델에 추가했습니다.'})
+        else {
+            Comment.findOne({'writer': doc.writer, 'postId': doc.postId, 'content': doc.content, 'responseTo': doc.responseTo })
+                .populate('writer')
+                .exec((err,info) => {
+                    if (err) return res.json({success: false, err})
+                    return res.json({success: true, info, message: 'singlecomment를 comment모델에 추가했습니다.'})
+                })
+        }  
     })
 })
 

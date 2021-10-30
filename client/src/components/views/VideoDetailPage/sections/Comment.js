@@ -2,11 +2,13 @@ import React, {useState} from 'react';
 import {useSelector} from 'react-redux';
 import Axios from 'axios';
 import SingleComment from './SingleComment';
+import ReplyComment from './ReplyComment';
 
 
 function Comment(props) {
 
-    const [comment, setcomment] = useState('')
+    const [comment, setcomment] = useState('');
+    const [replystate, setreplystate] = useState(false);
 
     const user = useSelector(state => state.user)
 
@@ -28,12 +30,16 @@ function Comment(props) {
                 if(response.data.success){
                     console.log(response.data);
                     setcomment('');
-                    props.commentSender(response.data.doc);
+                    props.commentSender([response.data.doc]);
                 } else {
                     alert('comment state를 DB에 보내는데 실패했습니다')
                 }
             })
 
+    }
+
+    const replyStateFunction = (reply) => {
+        setreplystate(reply);
     }
 
     return (
@@ -44,13 +50,26 @@ function Comment(props) {
 
             {/* Comment Lists */}
 
-            {props.commentLists.map((Comment, i) => (
-
-                <SingleComment 
-                    commentLists={Comment} 
-                    postId={props.videoId}
-                    commentSender={props.commentSender}
-                />
+            {props.commentLists && props.commentLists.map((Comment, i) => (
+               
+                (!Comment.responseTo &&
+                    <React.Fragment key={i}>
+                        <SingleComment 
+                            commentLists={Comment} 
+                            postId={props.videoId}
+                            commentSender={props.commentSender}
+                            replyStateFunction={replyStateFunction}
+                        />
+                        <ReplyComment
+                            commentLists={props.commentLists} 
+                            postId={props.videoId}
+                            commentSender={props.commentSender}
+                            parentId={Comment._id}
+                            replyState={replystate}
+                            replyStateFunction={replyStateFunction}
+                        />
+                    </React.Fragment>
+                )
 
             ))}
 
